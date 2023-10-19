@@ -37,6 +37,13 @@ async function run() {
           res.send(result)
     })
 
+    app.delete('/product', async(req,res)=> {
+      const newProduct = req.body;
+      console.log(newProduct)
+      const result = await productCollection.insertOne(newProduct);
+      res.send(result)
+})
+
     app.get('/product', async (req,res)=> {
       const cursor = productCollection.find();
       const result = await cursor.toArray();
