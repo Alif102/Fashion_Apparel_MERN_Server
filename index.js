@@ -44,9 +44,10 @@ async function run() {
       res.send(result);
     })
 
-    app.get("/product/:name", async(req,res)=> {
-      const name = req.params.name;
-      const query = {brand : name};
+    app.get("/product/:brand", async(req,res)=> {
+      const brandName = req.params.brand;
+      const smallBrandName = brandName.toLowerCase()
+      const query = {brand : smallBrandName};
       const result = await productCollection.find(query).toArray();
       res.send(result)
     })
