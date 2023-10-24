@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const productCollection = client.db('productDB').collection('products')
 
@@ -60,6 +60,30 @@ async function run() {
       const result = await productCollection.findOne(query);
       res.send(result)
     })
+
+    app.put("/productss/:id", async(req,res)=> {
+      const id = req.params.id;
+      const filter = { _id : new ObjectId(id)};
+      // const options = {upsert : true};
+      const updateProduct = req.body;
+      // const Product = 
+      console.log(updateProduct)
+      const result = await productCollection.updateOne(filter, 
+        {
+          $set : {
+            name : updateProduct.name,
+            brand : updateProduct.brand,
+            type : updateProduct.type,
+            image : updateProduct.image,
+            description : updateProduct.description,
+            price : updateProduct.price,
+            rating : updateProduct.rating
+          }
+        } );
+      res.send(result)
+    })
+
+
     
    
 
