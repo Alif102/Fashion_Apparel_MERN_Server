@@ -29,13 +29,78 @@ async function run() {
     // await client.connect();
 
     const productCollection = client.db('productDB').collection('products')
+    const cartCollection = client.db('productDB').collection('carts')
+
+
+   
+    app.post('/carts', async(req,res)=> {
+      let cart = req.body;
+      console.log(cart)
+      const result = await cartCollection.insertOne(cart);
+      res.send(result)
+})
+
+    app.get('/carts', async (req,res)=> {
+      const id = req.params.id
+      // console.log(id)
+      const cursor = cartCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+  //   app.get('/carts/:id', async (req, res) => {
+  //     const id = req.params.id;
+
+  //     const cursor = cartCollection.find({email:id});
+
+  //     const result = await cursor.toArray()
+
+     
+
+  //     res.send(result);
+  // })
+
+//   app.get('/carts/:id', async (req, res) => {
+//     const id = req.params.id;
+//     const cursor = cartCollection.find({email:id})
+
+//     const query = {_id : id};
+//     const result = await cartCollection.find(query).toArray();
+   
+
+//     res.send(result);
+// })
+
+
+app.get('/carts/:email', async (req, res) => {
+
+
+  const email = req.params.email
+
+
+  const result = await cartCollection.find({ email: email }).toArray()
+
+  res.send(result)
+
+})
+
+
+
+     
+    app.delete('/carts/:id',async(req,res)=>{
+    const id=req.params.id
+     console.log(id)
+     const query = {_id: new ObjectId (id)}
+        const result = await cartCollection.deleteOne(query)
+       res.send(result);
+      })
+
 
     app.post('/product', async(req,res)=> {
-          const newProduct = req.body;
-          console.log(newProduct)
-          const result = await productCollection.insertOne(newProduct);
-          res.send(result)
-    })
+      const newProduct = req.body;
+      console.log(newProduct)
+      const result = await productCollection.insertOne(newProduct);
+      res.send(result)
+})
 
 
     app.get('/product', async (req,res)=> {
@@ -46,17 +111,33 @@ async function run() {
 
     app.get("/product/:brand", async(req,res)=> {
       const brandName = req.params.brand;
-      // const smallBrandName = brandName.toLowerCase()
       const query = {brand : brandName};
       const result = await productCollection.find(query).toArray();
       res.send(result)
     })
+    app.get("/product/:brand/:_id", async(req,res)=> {
+      const idName = req.params._id;
+      // const smallBrandName = brandName.toLowerCase()
+      const query = {_id : idName};
+      const result = await productCollection.find(query).toArray();
+      res.send(result)
+    })
+    // app.get("/product/:_id", async(req,res)=> {
+    //   const id = req.params._id;
+    //   const query = {_id : new ObjectId (id) };
+    //   const options = {
+    //     projection : {image : 1 , name : 1 , price : 1}
+    //   }
+    //   const result = await productCollection.find(query,options).toArray();
+    //   res.send(result)
+    // })
 
     
     app.get("/products/:id", async(req,res)=> {
       const id = req.params.id;
       // const smallBrandName = brandName.toLowerCase()
       const query = {_id :new ObjectId (id)};
+      
       const result = await productCollection.findOne(query);
       res.send(result)
     })
